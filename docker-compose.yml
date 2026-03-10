@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+
+  kikandiDB:
+    image: mysql:8.0
+    container_name: kikandiDB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "L@nk0usm@ne"
+      MYSQL_DATABASE: default
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysqlpassword
+    volumes:
+      - kikandi_mysql_data:/var/lib/mysql
+    networks:
+      - kikandi_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pL@nk0usm@ne"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: kikandi_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      kikandiDB:
+        condition: service_healthy
+    environment:
+      PMA_HOST: kikandiDB
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 300M
+    ports:
+      - "8080:80"
+    networks:
+      - kikandi_network
+
+volumes:
+  kikandi_mysql_data:
+
+networks:
+  kikandi_network:
