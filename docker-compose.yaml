@@ -35,8 +35,9 @@ services:
       PMA_USER: root
       PMA_PASSWORD: "L@nk0usm@ne"
       UPLOAD_LIMIT: 100M
+      APACHE_SERVER_NAME: phpmyadmin
     ports:
-      - "8081:80"
+      - "8181:80"
     networks:
       - kikandi_net
 
