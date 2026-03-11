@@ -13,6 +13,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - mysql_config:/etc/mysql/conf.d
+    networks:
+      - kikandi_net
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pL@nk0usm@ne"]
       interval: 15s
@@ -34,10 +36,16 @@ services:
       PMA_PASSWORD: "L@nk0usm@ne"
       UPLOAD_LIMIT: 100M
     ports:
-      - "8081:80"
+      - "8080:80"
+    networks:
+      - kikandi_net
 
 volumes:
   mysql_data:
     driver: local
   mysql_config:
     driver: local
+
+networks:
+  kikandi_net:
+    driver: bridge
