@@ -34,7 +34,7 @@ services:
       PMA_PASSWORD: "L@nk0usm@ne"
       UPLOAD_LIMIT: 100M
     ports:
-      - "8080:80"
+      - "8081:80"
 
 volumes:
   mysql_data:
