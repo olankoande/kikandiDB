@@ -1,44 +1,42 @@
-version: "3.8"
-
 services:
-
-  kikandiDB:
+  mysql:
     image: mysql:8.0
     container_name: kikandiDB
-    restart: unless-stopped
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "L@nk0usm@ne"
-      MYSQL_DATABASE: default
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: mysqlpassword
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: "L@nk0usm@ne"
+    ports:
+      - "3306:3306"
     volumes:
-      - kikandi_mysql_data:/var/lib/mysql
-    networks:
-      - kikandi_network
+      - mysql_data:/var/lib/mysql
+      - mysql_config:/etc/mysql/conf.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pL@nk0usm@ne"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pL@nk0usm@ne"]
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
 
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: kikandi_phpmyadmin
-    restart: unless-stopped
+    container_name: phpmyadmin
+    restart: always
     depends_on:
-      kikandiDB:
+      mysql:
         condition: service_healthy
     environment:
       PMA_HOST: kikandiDB
       PMA_PORT: 3306
-      UPLOAD_LIMIT: 300M
+      PMA_USER: root
+      PMA_PASSWORD: "L@nk0usm@ne"
+      UPLOAD_LIMIT: 100M
     ports:
-      - "8081:80"
-    networks:
-      - kikandi_network
+      - "8080:80"
 
 volumes:
-  kikandi_mysql_data:
-
-networks:
-  kikandi_network:
+  mysql_data:
+    driver: local
+  mysql_config:
+    driver: local
