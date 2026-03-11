@@ -1,52 +1,33 @@
 services:
   mysql:
     image: mysql:8.0.36
-    container_name: kikandiDB
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "L@nk0usm@ne"
       MYSQL_DATABASE: mydb
       MYSQL_USER: user
       MYSQL_PASSWORD: "L@nk0usm@ne"
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - mysql_config:/etc/mysql/conf.d
-    networks:
-      - kikandi_net
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pL@nk0usm@ne"]
-      interval: 15s
-      timeout: 10s
+      interval: 5s
+      timeout: 20s
       retries: 10
-      start_period: 30s
 
   phpmyadmin:
-    image: phpmyadmin:5.2.1-apache
-    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
     restart: always
     depends_on:
       mysql:
         condition: service_healthy
     environment:
-      PMA_HOST: kikandiDB
-      PMA_PORT: 3306
+      PMA_HOST: mysql
       PMA_USER: root
       PMA_PASSWORD: "L@nk0usm@ne"
       UPLOAD_LIMIT: 100M
-      APACHE_SERVER_NAME: phpmyadmin
     ports:
       - "8181:80"
-    networks:
-      - kikandi_net
 
 volumes:
   mysql_data:
-    driver: local
-  mysql_config:
-    driver: local
-
-networks:
-  kikandi_net:
-    driver: bridge
