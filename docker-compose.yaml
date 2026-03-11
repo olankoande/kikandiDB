@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql:8.0.36
     container_name: kikandiDB
     restart: always
     environment:
@@ -14,13 +14,14 @@ services:
       - mysql_data:/var/lib/mysql
       - mysql_config:/etc/mysql/conf.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pL@nk0usm@ne"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pL@nk0usm@ne"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin:5.2.1-apache
     container_name: phpmyadmin
     restart: always
     depends_on:
